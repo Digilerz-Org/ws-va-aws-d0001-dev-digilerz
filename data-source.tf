@@ -1,0 +1,1 @@
+# nginx-2 = "Ubuntu 20.04-server x86_64"
