@@ -27,21 +27,17 @@ resource "aws_instance" "nginx1" {
   }
 
   ebs_block_device {
-    ebs_volume_1 = {
-      delete_on_termination = true
-      device_name           = "/dev/sdf"
-      volume_size           = 100
-      volume_type           = "standard"
-      encrypted             = true
-      # kms_key_id            = local.ebs_key
-      tags = {
-        Name = "nginx2"
-      }
-    }
+    device_name = "/dev/sdf"
+    volume_size = 100
+    volume_type = "standard"
+    encrypted   = false
+    # kms_key_id            = local.ebs_key
+    delete_on_termination = true
   }
 
   tags = {
-    Name = "nginx1"
+    Name        = "nginx1"
+    Environment = "dev"
   }
   depends_on = [aws_vpc.vpc]
 }
