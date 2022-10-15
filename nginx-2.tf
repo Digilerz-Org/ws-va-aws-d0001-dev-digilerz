@@ -19,7 +19,8 @@ resource "aws_instance" "nginx2" {
   vpc_security_group_ids = [aws_security_group.nginx-2-sg.id]
   user_data              = file("user-data/user_data-nginx-2.sh")
   tags = {
-    Name = "nginx2"
+    Name        = "nginx2"
+    Environment = "dev"
   }
   depends_on = [aws_vpc.vpc]
 }
