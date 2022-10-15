@@ -4,7 +4,8 @@ locals {
     project      = "digilerz-web-app"
     billing_code = "00000000000"
   }
-  organization = ""
-  workspaces   = "ws-va-aws-d0001-dev-digilerz"
+  organization = "demo-project-organization"
+  workspaces_1   = "ws-va-aws-d0001-dev-digilerz"
+  workspaces_2   = "digilerz-testing"
 
 }

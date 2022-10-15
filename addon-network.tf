@@ -13,7 +13,7 @@ variable "vpc_subnets_cidr_blocks" {
 variable "map_public_ip_on_launch" {
   type        = bool
   description = "Map a public IP address for Subnet instances"
-  default     = true
+  default     = false
 }
 
 ##################################################################################
