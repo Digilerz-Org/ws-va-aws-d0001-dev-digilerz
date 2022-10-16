@@ -11,13 +11,19 @@ variable "nginx2_instance_ami" {
   default     = "ami-062df10d14676e201"
 }
 
+# #Data block for AMI ID
+# data "aws_ssm_parameter" "ami" {
+#   name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+# }
+
 # INSTANCES
 resource "aws_instance" "nginx2" {
+  # ami                    = nonsensitive(data.aws_ssm_parameter.ami.value)
   ami                    = var.nginx2_instance_ami
   instance_type          = var.nginx2_instance_type
-  subnet_id              = aws_subnet.subnet2.id
+  subnet_id              = aws_subnet.subnet1.id
   vpc_security_group_ids = [aws_security_group.nginx-2-sg.id]
-  user_data              = file("user-data/user_data-nginx-2.sh")
+  user_data              = file("user-data/user-data-ubuntu.sh")
   key_name               = aws_key_pair.key121.key_name
   # dns_hostnames          = ["${var.nginx2_hostname}.${local.dns_suffix}"]
 
@@ -180,20 +186,40 @@ resource "null_resource" "nginx2_null_efs" {
 
 
 ##################################OUTPUT#########################################
-#INSTANCE (Lets Try to fetch the AZ and ID)
-output "instanceVal1" {
-  value = "Instance is Launcher -> ${aws_instance.nginx2.availability_zone}"
-}
 
-output "instanceVal2" {
+output "instance-id" {
   value = "ID of the Instance -> ${aws_instance.nginx2.id}"
+  description = "ID of Instance"
 }
 
-#EBS VOLUME (Lets Try To Print the AZ of volume and ID)
-output "volumeVal1" {
+output "instance-private-ip" {
+  value       = aws_instance.nginx2.private_ip
+  description = "Private IP address of instance for route53 DNS record"
+}
+
+output "instance-az" {
+  value = "Instance is Launcher -> ${aws_instance.nginx2.availability_zone}"
+  description = "AZ of Instance"
+}
+
+output "instance-root-volume-id" {
+  value       =  aws_instance.nginx2.root_block_device.*.volume_id
+  description = "root-volume-id"
+}
+
+output "instance-ebs-volume-id" {
+  value       =  aws_instance.nginx2.ebs_block_device.*.volume_id
+  description = "ebs-volume-id"
+}
+
+output "ebs-volume-az" {
   value = "AZ of volume -> ${aws_ebs_volume.volume.availability_zone}"
+  description = "AZ of EBS VOLUME"
 }
 
-output "volumeVal2" {
+output "ebs-volume-id" {
   value = "ID of Volume -> ${aws_ebs_volume.volume.id}"
+  description = "ID of EBS VOLUME"
 }
+
+
