@@ -69,11 +69,11 @@ output "ebs_volume_id" {
 output "volume-id-root" {
   description = "root volume-id"
   #get the root volume id form the instance
-     value       =  element(tolist(data.aws_instance.nginx1.root_block_device.*.volume_id),0)
+     value       =  aws_instance.nginx1.root_block_device.*.volume_id
 }
 
 output "volume-id-ebs" {
    description = "ebs-volume-id"
     #get the 1st esb volume id form the instance
-        value       =  element(tolist(data.aws_instance.nginx1.ebs_block_device.*.volume_id),0)
+        value       =  aws_instance.nginx1.ebs_block_device.*.volume_id
 }
