@@ -41,3 +41,21 @@ resource "aws_instance" "nginx1" {
   }
   depends_on = [aws_vpc.vpc]
 }
+
+
+
+######################### Outputs #############################
+output "nginx1_private_ip" {
+  value       = aws_instance.nginx1.this_private_ip
+  description = "Private IP address of instance for route53 DNS record"
+}
+
+output "nginx1_server_name" {
+  value       = "${var.nginx1_hostname}.${local.dns_suffix}"
+  description = "FQDN for route53 DNS record name"
+}
+
+output "nginx1_ebs_volume_id" {
+  value       = aws_instance.nginx1.this_ebs_volume_id_list[0]
+  description = "ebs volume id"
+}

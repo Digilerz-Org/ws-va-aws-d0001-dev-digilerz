@@ -1,0 +1,23 @@
+- hosts: all 
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Ensure mount directory exists.
+      file:
+        path: "{{ efs_mount_dir }}"
+        state: directory
+        mode: 0755
+
+    - name: Ensure EFS volume is mounted.
+      mount:
+        name: "{{ efs_mount_dir }}"
+        src: "{{ efs_file_system_id }}:/"
+        fstype: nfs4
+        opts: nfsvers=4.1
+        state: mounted
+
+    # Print the contents of the mount to the log.
+    - command: "ls -lah {{ efs_mount_dir }}"
+      register: efs_contents
+    - debug: var=efs_contents
