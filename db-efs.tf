@@ -1,3 +1,8 @@
+variable "db_efs_name" {
+  description = "name of the elastic file system"
+  default     = "db_efs"
+}
+
 resource "aws_efs_file_system" "db_efs" {
   creation_token = var.db_efs_name
   encrypted      = false
@@ -46,7 +51,7 @@ resource "aws_security_group" "db_efs_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(local.tags, tomap({ "Name" = "${local.namespace}-efs-security-group" }))
+  tags = { "Name" = "${local.namespace}-efs-security-group" }
 
 }
 

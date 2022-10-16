@@ -46,16 +46,34 @@ resource "aws_instance" "nginx1" {
 
 ######################### Outputs #############################
 output "nginx1_private_ip" {
-  value       = aws_instance.nginx1.this_private_ip
+  value       = aws_instance.nginx1.private_ip
   description = "Private IP address of instance for route53 DNS record"
 }
 
-output "nginx1_server_name" {
-  value       = "${var.nginx1_hostname}.${local.dns_suffix}"
-  description = "FQDN for route53 DNS record name"
+# output "nginx1_server_name" {
+#   value       = "${var.nginx1_hostname}.${local.dns_suffix}"
+#   description = "FQDN for route53 DNS record name"
+# }
+
+data "aws_ebs_volume" "ebs_volume" {
+  most_recent = true
+  filter {
+    name   = "attachment.instance-id"
+    values = ["${aws_instance.nginx1.id}"]
+  }
+}
+output "ebs_volume_id" {
+  value = "${data.aws_ebs_volume.ebs_volume.id}"
 }
 
-output "nginx1_ebs_volume_id" {
-  value       = aws_instance.nginx1.this_ebs_volume_id_list[0]
-  description = "ebs volume id"
+output "volume-id-root" {
+  description = "root volume-id"
+  #get the root volume id form the instance
+     value       =  element(tolist(data.aws_instance.nginx1.root_block_device.*.volume_id),0)
+}
+
+output "volume-id-ebs" {
+   description = "ebs-volume-id"
+    #get the 1st esb volume id form the instance
+        value       =  element(tolist(data.aws_instance.nginx1.ebs_block_device.*.volume_id),0)
 }
