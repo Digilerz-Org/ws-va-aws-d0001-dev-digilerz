@@ -177,7 +177,9 @@ resource "null_resource" "nginx2_null_efs" {
   provisioner "remote-exec" {
     inline = [
       " export ANSIBLE_HOST_KEY_CHECKING=False",
-      " ansible-playbook --extra-vars='{ efs_file_system_id : ${aws_efs_mount_target.efs_mount_trgt_2a.ip_address}, efs_mount_dir : /udb_dba_share }'  --connection=local --inventory 127.0.0.1, /home/ec2-user/efs.yaml "
+      # " ansible-playbook --extra-vars='{ efs_file_system_id : ${aws_efs_mount_target.efs_mount_trgt_2a.ip_address}, efs_mount_dir : /udb_dba_share }'  --connection=local --inventory 127.0.0.1, /home/ec2-user/efs.yaml "
+      " ansible-playbook --connection=local --inventory 127.0.0.1, /home/ec2-user/efs.yaml "
+
     ]
   }
   depends_on = [aws_efs_file_system.db_efs]
@@ -188,7 +190,7 @@ resource "null_resource" "nginx2_null_efs" {
 ##################################OUTPUT#########################################
 
 output "instance-id" {
-  value = "ID of the Instance -> ${aws_instance.nginx2.id}"
+  value       = "ID of the Instance -> ${aws_instance.nginx2.id}"
   description = "ID of Instance"
 }
 
@@ -198,26 +200,26 @@ output "instance-private-ip" {
 }
 
 output "instance-az" {
-  value = "Instance is Launcher -> ${aws_instance.nginx2.availability_zone}"
+  value       = "Instance is Launcher -> ${aws_instance.nginx2.availability_zone}"
   description = "AZ of Instance"
 }
 
 output "instance-root-volume-id" {
-  value       =  aws_instance.nginx2.root_block_device.*.volume_id
+  value       = aws_instance.nginx2.root_block_device.*.volume_id
   description = "root-volume-id"
 }
 
 output "instance-ebs-volume-id" {
-  value       =  aws_instance.nginx2.ebs_block_device.*.volume_id
+  value       = aws_instance.nginx2.ebs_block_device.*.volume_id
   description = "ebs-volume-id"
 }
 
 output "ebs-volume-az" {
-  value = "AZ of volume -> ${aws_ebs_volume.volume.availability_zone}"
+  value       = "AZ of volume -> ${aws_ebs_volume.volume.availability_zone}"
   description = "AZ of EBS VOLUME"
 }
 
 output "ebs-volume-id" {
-  value = "ID of Volume -> ${aws_ebs_volume.volume.id}"
+  value       = "ID of Volume -> ${aws_ebs_volume.volume.id}"
   description = "ID of EBS VOLUME"
 }
