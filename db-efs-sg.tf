@@ -5,7 +5,7 @@ resource "aws_security_group" "db_efs_security_group" {
   name        = "${local.namespace}-efs-security-group"
 
   # to allow the traffic from the bastions
-  
+
   ingress {
     description     = "Open port for Network File System"
     security_groups = [aws_security_group.nginx-2-sg.id]
