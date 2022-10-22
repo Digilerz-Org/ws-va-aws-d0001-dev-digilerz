@@ -2,7 +2,17 @@
   become: yes
   gather_facts: yes
 
+  vars:
+    # aws_profile: default
+    # aws_region: us-east-1
+    nfs_package: nfs-common # nfs-utils on RHEL/CentOS/Amazon Linux
+    # efs_file_system_id: [ID here]
+    # efs_mount_dir: /efs
+
   tasks:
+    - name: Ensure NFS is installed.
+      package: "name={{ nfs_package }} state=installed"
+
     - name: Ensure mount directory exists.
       file:
         path: "{{ efs_mount_dir }}"
@@ -12,6 +22,7 @@
     - name: Ensure EFS volume is mounted.
       mount:
         name: "{{ efs_mount_dir }}"
+        # src: "{{ aws_current_az.content }}.{{ efs_file_system_id }}.efs.{{ aws_region }}.amazonaws.com:/"
         src: "{{ efs_file_system_id }}:/"
         fstype: nfs4
         opts: nfsvers=4.1
