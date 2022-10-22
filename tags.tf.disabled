@@ -1,7 +1,0 @@
-resource "aws_ec2_tag" "nginx2" {
-  resource_id = [aws_instance.nginx2.id]
-  key         = "dev"
-  value       = "nginx2"
-  depends_on  = [aws_vpc.vpc, aws_instance.nginx2, aws_ebs_volume.volume]
-}
-
