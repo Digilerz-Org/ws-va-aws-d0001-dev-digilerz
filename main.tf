@@ -16,6 +16,10 @@ variable "AWS_REGION" {
   default     = "ap-south-1"
 }
 
+# variable "shared_cred_file" {
+#  default = "/home/alpha/.aws/credentials"
+# }
+
 
 ##################################################################################
 # PROVIDERS
@@ -24,4 +28,6 @@ provider "aws" {
   access_key = var.AWS_ACCESS_KEY_ID
   secret_key = var.AWS_SECRET_ACCESS_KEY
   region     = var.AWS_REGION
+  # shared_credentials_file = "${var.shared_cred_file}"
+  # profile = "default"  
 }
