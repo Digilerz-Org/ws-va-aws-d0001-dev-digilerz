@@ -103,13 +103,13 @@ resource "null_resource" "nginx2_null_resource" {
 
 resource "null_resource" "nginx2_ebs_null_resource" {
   triggers = {
-    ec2_instance_ids = aws_instance.nginx2.this_id
+    ec2_instance_ids = aws_instance.nginx2.id
   }
 
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    host        = aws_instance.nginx2.this_private_ip
+    host        = aws_instance.nginx2.private_ip
     private_key = tls_private_key.oskey.private_key_pem
   }
 
