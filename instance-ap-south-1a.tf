@@ -221,5 +221,3 @@ output "ebs-volume-id" {
   value = "ID of Volume -> ${aws_ebs_volume.volume.id}"
   description = "ID of EBS VOLUME"
 }
-
-
