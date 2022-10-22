@@ -78,7 +78,7 @@ resource "null_resource" "nginx2_null_resource" {
 
   connection {
     type        = "ssh"
-    user        = "${local.instance_user_name}"
+    user        = "ubuntu"
     host        = aws_instance.nginx2.this_private_ip
     private_key = tls_private_key.oskey.private_key_pem
   }
@@ -114,7 +114,7 @@ resource "null_resource" "nginx2_ebs_null_resource" {
 
   connection {
     type        = "ssh"
-    user        = local.instance_user_name
+    user        = "ubuntu"
     host        = aws_instance.nginx2.private_ip
     private_key = tls_private_key.oskey.private_key_pem
   }
@@ -122,14 +122,14 @@ resource "null_resource" "nginx2_ebs_null_resource" {
   # Create mount point for server from /dev/sdf device to /was
   provisioner "file" {
     source      = "./script-files/ebs.sh"
-    destination = "/home/${local.instance_user_name}/ebs.sh"
+    destination = "/home/ubuntu/ebs.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/${local.instance_user_name}/ebs.sh",
+      "chmod +x /home/ubuntu/ebs.sh",
       "sleep 3m",
-      "sudo /home/${local.instance_user_name}/ebs.sh ${aws_ebs_volume.volume.id} /home/${local.instance_user_name}/"
+      "sudo /home/ubuntu/ebs.sh ${aws_ebs_volume.volume.id} /home/ubuntu/"
     ]
   }
   depends_on = [aws_instance.nginx2, aws_volume_attachment.ebsAttach]
@@ -143,7 +143,7 @@ resource "null_resource" "nginx2_null_swap_memory" {
 
   connection {
     type        = "ssh"
-    user        = "${local.instance_user_name}"
+    user        = "ubuntu"
     host        = aws_instance.nginx2.this_private_ip
     private_key = tls_private_key.oskey.private_key_pem
   }
@@ -151,14 +151,14 @@ resource "null_resource" "nginx2_null_swap_memory" {
   ## Add swapmemory to the instance
   provisioner "file" {
     source      = "./script-files/swap_memory_file.sh"
-    destination = "/home/${local.instance_user_name}/swap_memory_file.sh"
+    destination = "/home/ubuntu/swap_memory_file.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/${local.instance_user_name}/swap_memory_file.sh",
+      "chmod +x /home/ubuntu/swap_memory_file.sh",
       "sleep 3m",
-      "sudo  /home/${local.instance_user_name}/swap_memory_file.sh ${aws_ebs_volume.volume.id} swap"
+      "sudo  /home/ubuntu/swap_memory_file.sh ${aws_ebs_volume.volume.id} swap"
     ]
   }
 }
@@ -170,20 +170,20 @@ resource "null_resource" "nginx2_null_resource_efs" {
 
   connection {
     type        = "ssh"
-    user        = local.instance_user_name
+    user        = "ubuntu"
     host        = aws_instance.nginx2.private_ip
     private_key = tls_private_key.oskey.private_key_pem
   }
 
   provisioner "file" {
     source      = "./ansible-aws/efs.yaml"
-    destination = "/home/${local.instance_user_name}/efs.yaml"
+    destination = "/home/ubuntu/efs.yaml"
   }
 
   provisioner "remote-exec" {
     inline = [
       " export ANSIBLE_HOST_KEY_CHECKING=False",
-      " ansible-playbook --extra-vars='{ efs_file_system_id : ${aws_efs_mount_target.efs_mount_trgt_2a.ip_address}, efs_mount_dir : /efs }'  --connection=local --inventory 127.0.0.1, /home/${local.instance_user_name}/efs.yaml "
+      " ansible-playbook --extra-vars='{ efs_file_system_id : ${aws_efs_mount_target.efs_mount_trgt_2a.ip_address}, efs_mount_dir : /efs }'  --connection=local --inventory 127.0.0.1, /home/ubuntu/efs.yaml "
     ]
   }
   depends_on = [tls_private_key.oskey, aws_instance.nginx2, aws_efs_file_system.db_efs]
