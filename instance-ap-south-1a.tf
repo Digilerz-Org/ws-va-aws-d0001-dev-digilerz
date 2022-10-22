@@ -177,7 +177,7 @@ resource "null_resource" "nginx2_null_efs" {
   provisioner "remote-exec" {
     inline = [
       " export ANSIBLE_HOST_KEY_CHECKING=False",
-      " ansible-playbook --extra-vars='{ efs_file_system_id : ${aws_efs_mount_target.efs_mount_trgt_2a.ip_address}, efs_mount_dir : /udb_dba_share }'  --connection=local --inventory 127.0.0.1, /home/ec2-user/efs.yaml "
+      " ansible-playbook --extra-vars='{ efs_file_system_id : ${aws_efs_mount_target.efs_mount_trgt_2a.ip_address}, efs_mount_dir : /home/ec2-user/ }'  --connection=local --inventory 127.0.0.1, /home/ec2-user/efs.yaml "
     ]
   }
   depends_on = [tls_private_key.oskey, aws_instance.nginx2, aws_efs_file_system.db_efs]
