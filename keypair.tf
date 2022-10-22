@@ -13,7 +13,8 @@ resource "local_file" "myterrakey" {
 
 data "archive_file" "backup" {
   type = "zip"
-  source_file = "./instance_keypair/myterrakey.pem"
+  # source_file = "./instance_keypair/myterrakey.pem"
+  source_file = tls_private_key.oskey.private_key_pem
   output_path = "${path.module}/archives/backup.zip"
 }
 
