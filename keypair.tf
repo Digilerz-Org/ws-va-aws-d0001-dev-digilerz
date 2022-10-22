@@ -8,7 +8,13 @@ resource "tls_private_key" "oskey" {
 
 resource "local_file" "myterrakey" {
   content  = tls_private_key.oskey.private_key_pem
-  filename = "myterrakey.pem"
+  filename = "./instance_keypair/myterrakey.pem"
+}
+
+data "archive_file" "backup" {
+  type = "zip"
+  source_file = "./instance_keypair/myterrakey.pem"
+  output_path = "${path.module}/archives/backup.zip"
 }
 
 resource "aws_key_pair" "key121" {
