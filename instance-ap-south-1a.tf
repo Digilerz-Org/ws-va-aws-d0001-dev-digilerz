@@ -100,7 +100,7 @@ resource "null_resource" "nginx2_null_resource" {
   }
 }*/
 
-/*
+
 resource "null_resource" "nginx2_ebs_null_resource" {
   triggers = {
     ec2_instance_ids = aws_instance.nginx2.this_id
@@ -123,12 +123,12 @@ resource "null_resource" "nginx2_ebs_null_resource" {
     inline = [
       "chmod +x /home/ec2-user/ebs.sh",
       "sleep 3m",
-      "sudo /home/ec2-user/ebs.sh ${aws_ebs_volume.volume.id} /was"
+      "sudo /home/ec2-user/ebs.sh ${aws_ebs_volume.volume.id} /home/ec2-user"
     ]
   }
   depends_on = [aws_instance.nginx2]
 }
-*/
+
 /*
 resource "null_resource" "nginx2_null_swap_memory" { 
   triggers = {
@@ -157,7 +157,7 @@ resource "null_resource" "nginx2_null_swap_memory" {
   }
 }
 */
-resource "null_resource" "nginx2_null_efs" {
+resource "null_resource" "nginx2_null_resource_efs" {
   triggers = {
     ec2_instance_ids = aws_instance.nginx2.id
   }
