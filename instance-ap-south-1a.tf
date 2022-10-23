@@ -29,7 +29,7 @@ resource "aws_instance" "nginx2" {
   instance_type          = var.nginx2_instance_type
   subnet_id              = aws_subnet.subnet1.id
   vpc_security_group_ids = [aws_security_group.nginx-2-sg.id]
-  user_data              = file("user-data/user-data-ubuntu.sh")
+  user_data              = file("user-data-ubuntu/ubuntu-installation.sh")
   key_name               = aws_key_pair.key121.key_name
   # dns_hostnames          = ["${var.nginx2_hostname}.${local.dns_suffix}"]
 
@@ -50,63 +50,49 @@ resource "aws_instance" "nginx2" {
     delete_on_termination = true
   }
 
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "rm -rf ~/home/ubuntu/script-files",
+  #     # "mkdir -p ~/script-files"
+  #   ]
+  # }  
+
+  provisioner "file" {
+    # source      = "./script-files"
+    # destination = "/home/ubuntu/
+    source      = "./script-files/efs.yaml"
+    destination = "/home/ubuntu/efs.yaml"
+  }
+
+  provisioner "local-exec" {
+    command = "export ANSIBLE_HOST_KEY_CHECKING=False && ansible-playbook --extra-vars='{ efs_file_system_id : ${aws_efs_mount_target.efs_mount_trgt_2a.ip_address}, efs_mount_dir : /efs }'  --connection=local --inventory 127.0.0.1, /home/ubuntu/efs.yaml "
+    # command = "chmod +x /home/ubuntu/ebs.sh",
+    # command = "sleep 3m",
+    # command = "sudo /home/ubuntu/ebs.sh ${aws_ebs_volume.volume.id} /home/ubuntu/"
+  }
+
   tags = {
     Name        = "nginx2"
     Environment = "dev"
   }
-  depends_on = [aws_vpc.vpc]
+  depends_on = [aws_vpc.vpc, tls_private_key.oskey, aws_efs_file_system.db_efs]
 }
 
 resource "aws_ebs_volume" "volume" {
   availability_zone = aws_instance.nginx2.availability_zone
   size              = 10
-  depends_on        = [aws_vpc.vpc, aws_instance.nginx2]
+  depends_on        = [aws_instance.nginx2]
 }
 
 resource "aws_volume_attachment" "ebsAttach" {
   device_name = "/dev/sdh"
   volume_id   = aws_ebs_volume.volume.id
   instance_id = aws_instance.nginx2.id
-  depends_on  = [aws_instance.nginx2, aws_ebs_volume.volume]
+  depends_on  = [aws_ebs_volume.volume]
 }
+
 /*
-resource "null_resource" "nginx2_null_resource" {
-  depends_on = [aws_instance.nginx2, aws_ebs_volume.volume]
-  triggers = {
-    ec2_instance_ids = aws_instance.nginx2.this_id
-  }
-
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    host        = aws_instance.nginx2.this_private_ip
-    private_key = tls_private_key.oskey.private_key_pem
-  }
-
-  # Create directory to copy files on to cohost instance
-  provisioner "remote-exec" {
-    inline = [
-      "rm -rf ~/ansible-scripts;mkdir -p ~/ansible-scripts",
-    ]
-  }
-
-  # Copy ansible files to cohost instance
-  provisioner "file" {
-    source      = "./ansible-scripts"
-    destination = "~/ansible-scripts"
-  }
-
-  # Run commands on bastion instances
-  provisioner "remote-exec" {
-    inline = [
-      "export ANSIBLE_HOST_KEY_CHECKING=False",
-      "ansible-playbook  --connection=local --inventory 127.0.0.1, ~/ansible-scripts/ansible-main.yml"
-      #"ansible-playbook --extra-vars='{ dnshostname : ${var.nginx2_hostname}.${local.dns_suffix} }' --connection=local --inventory 127.0.0.1, ~/ansible-scripts/ansible-rhel79/ansible-rhel79.yml"      
-    ]
-  }
-}*/
-
-
+#Null Resources
 resource "null_resource" "nginx2_ebs_null_resource" {
   triggers = {
     ec2_instance_ids = aws_instance.nginx2.id
@@ -135,34 +121,7 @@ resource "null_resource" "nginx2_ebs_null_resource" {
   depends_on = [aws_instance.nginx2, aws_volume_attachment.ebsAttach]
 }
 
-/*
-resource "null_resource" "nginx2_null_swap_memory" { 
-  triggers = {
-    ec2_instance_ids = aws_instance.nginx2.this_id
-  }
 
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    host        = aws_instance.nginx2.this_private_ip
-    private_key = tls_private_key.oskey.private_key_pem
-  }
-
-  ## Add swapmemory to the instance
-  provisioner "file" {
-    source      = "./script-files/swap_memory_file.sh"
-    destination = "/home/ubuntu/swap_memory_file.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x /home/ubuntu/swap_memory_file.sh",
-      "sleep 3m",
-      "sudo  /home/ubuntu/swap_memory_file.sh ${aws_ebs_volume.volume.id} swap"
-    ]
-  }
-}
-*/
 resource "null_resource" "nginx2_null_resource_efs" {
   triggers = {
     ec2_instance_ids = aws_instance.nginx2.id
@@ -188,7 +147,7 @@ resource "null_resource" "nginx2_null_resource_efs" {
   }
   depends_on = [tls_private_key.oskey, aws_instance.nginx2, aws_efs_file_system.db_efs]
 }
-
+*/
 
 
 ##################################OUTPUT#########################################
