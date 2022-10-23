@@ -57,18 +57,18 @@ resource "aws_instance" "nginx2" {
   depends_on = [aws_vpc.vpc, tls_private_key.oskey]
 }
 
-resource "aws_ebs_volume" "ebs_volume" {
-  availability_zone = aws_instance.nginx2.availability_zone
-  size              = 10
-  depends_on        = [aws_instance.nginx2]
-}
+# resource "aws_ebs_volume" "ebs_volume" {
+#   availability_zone = aws_instance.nginx2.availability_zone
+#   size              = 10
+#   depends_on        = [aws_instance.nginx2]
+# }
 
-resource "aws_volume_attachment" "ebs_attach" {
-  device_name = "/dev/sdh"
-  volume_id   = aws_ebs_volume.ebs_volume.id
-  instance_id = aws_instance.nginx2.id
-  depends_on  = [aws_ebs_volume.ebs_volume]
-}
+# resource "aws_volume_attachment" "ebs_attach" {
+#   device_name = "/dev/sdh"
+#   volume_id   = aws_ebs_volume.ebs_volume.id
+#   instance_id = aws_instance.nginx2.id
+#   depends_on  = [aws_ebs_volume.ebs_volume]
+# }
 
 
 
@@ -100,13 +100,13 @@ output "instance-ebs-volume-id" {
   description = "ebs-volume-id"
 }
 
-output "ebs-volume-az" {
-  value       = "AZ of volume -> ${aws_ebs_volume.ebs_volume.availability_zone}"
-  description = "AZ of EBS VOLUME"
-}
+# output "ebs-volume-az" {
+#   value       = "AZ of volume -> ${aws_ebs_volume.ebs_volume.availability_zone}"
+#   description = "AZ of EBS VOLUME"
+# }
 
-output "ebs-volume-id" {
-  value       = "ID of Volume -> ${aws_ebs_volume.ebs_volume.id}"
-  description = "ID of EBS VOLUME"
-}
+# output "ebs-volume-id" {
+#   value       = "ID of Volume -> ${aws_ebs_volume.ebs_volume.id}"
+#   description = "ID of EBS VOLUME"
+# }
 

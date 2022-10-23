@@ -3,8 +3,9 @@
 # }
 
 resource "tls_private_key" "oskey" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
+  # algorithm = "RSA"
+  # rsa_bits = 4096
+  algorithm = "ED25519"
 }
 
 resource "local_file" "myterrakey" {

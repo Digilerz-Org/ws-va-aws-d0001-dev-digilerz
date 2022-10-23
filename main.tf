@@ -15,7 +15,7 @@ variable "AWS_REGION" {
 }
 
 # variable "shared_cred_file" {
-#  default = "/home/alpha/.aws/credentials"
+#  default = "/home/tf_user/.aws/credentials"
 # }
 
 
@@ -27,5 +27,7 @@ provider "aws" {
   secret_key = var.AWS_SECRET_ACCESS_KEY
   region     = var.AWS_REGION
   # shared_credentials_file = "${var.shared_cred_file}"
-  # profile = "default"  
+  # profile = "customprofile"  
 }
+
+
