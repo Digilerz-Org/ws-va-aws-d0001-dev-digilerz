@@ -65,7 +65,7 @@ resource "aws_instance" "nginx2" {
   }
 
   provisioner "local-exec" {
-    inline = [
+    command = [
       # "chmod +x /home/ubuntu/ebs.sh",
       # "sleep 3m",
       # "sudo /home/ubuntu/ebs.sh ${aws_ebs_volume.volume.id} /home/ubuntu/",
