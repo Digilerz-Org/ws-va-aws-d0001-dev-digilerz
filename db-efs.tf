@@ -11,7 +11,7 @@ resource "aws_efs_file_system" "db_efs" {
     Name        = "nginx2-efs"
     Environment = "dev"
   }
-  # depends_on = [aws_instance.nginx2]
+  depends_on = [aws_instance.nginx2]
 }
 
 resource "aws_efs_mount_target" "efs_mount_trgt_2a" {

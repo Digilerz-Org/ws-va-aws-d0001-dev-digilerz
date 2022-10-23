@@ -1,6 +1,6 @@
 
 locals {
-  instance_user_name = "ubuntu"
+  instance_user_name = "ubuntu" #this is not 
 
 }
 
@@ -50,113 +50,27 @@ resource "aws_instance" "nginx2" {
     delete_on_termination = true
   }
 
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "rm -rf ~/home/ubuntu/script-files",
-  #     # "mkdir -p ~/script-files"
-  #   ]
-  # }  
-
-  connection {
-    user        = "ubuntu"
-    host        = "localhost"
-    private_key = tls_private_key.oskey.private_key_pem
-  }
-
-  provisioner "file" {
-    # source      = "./script-files"
-    # destination = "/home/ubuntu/
-    source      = "./script-files/efs.yaml"
-    destination = "/home/ubuntu/efs.yaml"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      # "chmod +x /home/ubuntu/ebs.sh",
-      # "sleep 3m",
-      # "sudo /home/ubuntu/ebs.sh ${aws_ebs_volume.volume.id} /home/ubuntu/",
-      "export ANSIBLE_HOST_KEY_CHECKING=False",
-      "ansible-playbook --extra-vars='{ efs_file_system_id : ${aws_efs_mount_target.efs_mount_trgt_2a.ip_address}, efs_mount_dir : /efs }'  --connection=local --inventory 127.0.0.1, /home/ubuntu/efs.yaml "
-    ]
-  }
-
   tags = {
     Name        = "nginx2"
     Environment = "dev"
   }
-  depends_on = [aws_vpc.vpc, tls_private_key.oskey, aws_efs_file_system.db_efs]
+  depends_on = [aws_vpc.vpc, tls_private_key.oskey]
 }
 
-resource "aws_ebs_volume" "volume" {
+resource "aws_ebs_volume" "ebs_volume" {
   availability_zone = aws_instance.nginx2.availability_zone
   size              = 10
   depends_on        = [aws_instance.nginx2]
 }
 
-resource "aws_volume_attachment" "ebsAttach" {
+resource "aws_volume_attachment" "ebs_attach" {
   device_name = "/dev/sdh"
-  volume_id   = aws_ebs_volume.volume.id
+  volume_id   = aws_ebs_volume.ebs_volume.id
   instance_id = aws_instance.nginx2.id
-  depends_on  = [aws_ebs_volume.volume]
-}
-
-/*
-#Null Resources
-resource "null_resource" "nginx2_ebs_null_resource" {
-  triggers = {
-    ec2_instance_ids = aws_instance.nginx2.id
-  }
-
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    host        = aws_instance.nginx2.private_ip
-    private_key = tls_private_key.oskey.private_key_pem
-  }
-
-  # Create mount point for server from /dev/sdf device to /was
-  provisioner "file" {
-    source      = "./script-files/ebs.sh"
-    destination = "/home/ubuntu/ebs.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x /home/ubuntu/ebs.sh",
-      "sleep 3m",
-      "sudo /home/ubuntu/ebs.sh ${aws_ebs_volume.volume.id} /home/ubuntu/"
-    ]
-  }
-  depends_on = [aws_instance.nginx2, aws_volume_attachment.ebsAttach]
+  depends_on  = [aws_ebs_volume.ebs_volume]
 }
 
 
-resource "null_resource" "nginx2_null_resource_efs" {
-  triggers = {
-    ec2_instance_ids = aws_instance.nginx2.id
-  }
-
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    host        = aws_instance.nginx2.private_ip
-    private_key = tls_private_key.oskey.private_key_pem
-  }
-
-  provisioner "file" {
-    source      = "./ansible-aws/efs.yaml"
-    destination = "/home/ubuntu/efs.yaml"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      " export ANSIBLE_HOST_KEY_CHECKING=False",
-      " ansible-playbook --extra-vars='{ efs_file_system_id : ${aws_efs_mount_target.efs_mount_trgt_2a.ip_address}, efs_mount_dir : /efs }'  --connection=local --inventory 127.0.0.1, /home/ubuntu/efs.yaml "
-    ]
-  }
-  depends_on = [tls_private_key.oskey, aws_instance.nginx2, aws_efs_file_system.db_efs]
-}
-*/
 
 
 ##################################OUTPUT#########################################
@@ -187,12 +101,12 @@ output "instance-ebs-volume-id" {
 }
 
 output "ebs-volume-az" {
-  value       = "AZ of volume -> ${aws_ebs_volume.volume.availability_zone}"
+  value       = "AZ of volume -> ${aws_ebs_volume.ebs_volume.availability_zone}"
   description = "AZ of EBS VOLUME"
 }
 
 output "ebs-volume-id" {
-  value       = "ID of Volume -> ${aws_ebs_volume.volume.id}"
+  value       = "ID of Volume -> ${aws_ebs_volume.ebs_volume.id}"
   description = "ID of EBS VOLUME"
 }
 

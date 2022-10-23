@@ -6,7 +6,7 @@ locals {
   }
 
   # Terraform organization
-  organization = "demo-project-organization"
+  organization = "Digilerz-Org"
 
   # Terraform workspace list
   workspaces_1 = "ws-va-aws-addon-dev-networking"
