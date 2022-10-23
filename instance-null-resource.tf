@@ -1,3 +1,24 @@
+###############Null resources#################
+resource "null_resource" "copy_null_resource" {
+  triggers = {
+    ec2_instance_ids = aws_instance.nginx2.id
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = aws_instance.nginx2.public_ip
+    private_key = file("instance_keypair/myterrakey.pem")
+    timeout     = "4m"
+  }
+
+  provisioner "file" {
+    source      = "./script-files/efs.yaml"
+    destination = "/home/ubuntu/efs.yaml"
+  }
+}
+
+
 
 /*
 ###############EBS Mount file -  Null resources#################
@@ -114,12 +135,13 @@ resource "null_resource" "nginx2_null_resource_efs" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = aws_instance.nginx2.private_ip
-    private_key = tls_private_key.oskey.private_key_pem
+    host        = aws_instance.nginx2.public_ip
+    private_key = file("./instance_keypair/myterrakey.pem")
+    timeout     = "4m"
   }
 
   provisioner "file" {
-    source      = "./ansible-aws/efs.yaml"
+    source      = "./script-files/efs.yaml"
     destination = "/home/ubuntu/efs.yaml"
   }
 

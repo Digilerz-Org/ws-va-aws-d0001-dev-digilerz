@@ -1,3 +1,7 @@
+#Terraform hidden files
 .terraform
 .terraform.lock.hcl
 terraform.tfstate*
+
+#AWS Instance keypair
+instance_keypair

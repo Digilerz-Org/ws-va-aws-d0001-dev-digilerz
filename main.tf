@@ -29,3 +29,5 @@ provider "aws" {
   # shared_credentials_file = "${var.shared_cred_file}"
   # profile = "customprofile"  
 }
+
+
