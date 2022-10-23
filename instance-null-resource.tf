@@ -1,22 +1,22 @@
-###############Null resources#################
-resource "null_resource" "copy_null_resource" {
-  triggers = {
-    ec2_instance_ids = aws_instance.nginx2.id
-  }
+# ###############Null resources#################
+# resource "null_resource" "copy_null_resource" {
+#   triggers = {
+#     ec2_instance_ids = aws_instance.nginx2.id
+#   }
 
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    host        = aws_instance.nginx2.public_ip
-    private_key = file("instance_keypair/myterrakey.pem")
-    timeout     = "4m"
-  }
+#   connection {
+#     type        = "ssh"
+#     user        = "ubuntu"
+#     host        = aws_instance.nginx2.public_ip
+#     private_key = file("instance_keypair/myterrakey.pem")
+#     timeout     = "4m"
+#   }
 
-  provisioner "file" {
-    source      = "./script-files/efs.yaml"
-    destination = "/home/ubuntu/efs.yaml"
-  }
-}
+#   provisioner "file" {
+#     source      = "./script-files/efs.yaml"
+#     destination = "/home/ubuntu/efs.yaml"
+#   }
+# }
 
 
 
