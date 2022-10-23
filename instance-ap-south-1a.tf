@@ -59,6 +59,7 @@ resource "aws_instance" "nginx2" {
 
   connection {
     user        = "ubuntu"
+    host        = "localhost"
     private_key = tls_private_key.oskey.private_key_pem
   }
 
