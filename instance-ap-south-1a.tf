@@ -58,9 +58,7 @@ resource "aws_instance" "nginx2" {
   # }  
 
   connection {
-    type        = "ssh"
     user        = "ubuntu"
-    host        = "127.0.0.1"
     private_key = tls_private_key.oskey.private_key_pem
   }
 
@@ -71,11 +69,14 @@ resource "aws_instance" "nginx2" {
     destination = "/home/ubuntu/efs.yaml"
   }
 
-  provisioner "local-exec" {
-    command = "export ANSIBLE_HOST_KEY_CHECKING=False && ansible-playbook --extra-vars='{ efs_file_system_id : ${aws_efs_mount_target.efs_mount_trgt_2a.ip_address}, efs_mount_dir : /efs }'  --connection=local --inventory 127.0.0.1, /home/ubuntu/efs.yaml "
-    # command = "chmod +x /home/ubuntu/ebs.sh",
-    # command = "sleep 3m",
-    # command = "sudo /home/ubuntu/ebs.sh ${aws_ebs_volume.volume.id} /home/ubuntu/"
+  provisioner "remote-exec" {
+    inline = [
+      # "chmod +x /home/ubuntu/ebs.sh",
+      # "sleep 3m",
+      # "sudo /home/ubuntu/ebs.sh ${aws_ebs_volume.volume.id} /home/ubuntu/",
+      "export ANSIBLE_HOST_KEY_CHECKING=False",
+      "ansible-playbook --extra-vars='{ efs_file_system_id : ${aws_efs_mount_target.efs_mount_trgt_2a.ip_address}, efs_mount_dir : /efs }'  --connection=local --inventory 127.0.0.1, /home/ubuntu/efs.yaml "
+    ]
   }
 
   tags = {
