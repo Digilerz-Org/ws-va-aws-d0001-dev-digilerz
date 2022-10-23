@@ -57,6 +57,13 @@ resource "aws_instance" "nginx2" {
   #   ]
   # }  
 
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = "127.0.0.1"
+    private_key = tls_private_key.oskey.private_key_pem
+  }
+
   provisioner "file" {
     # source      = "./script-files"
     # destination = "/home/ubuntu/
