@@ -78,20 +78,20 @@ resource "aws_instance" "nginx2" {
     Name        = "nginx2"
     Environment = "dev"
   }
-  depends_on = [aws_vpc.vpc]
+  depends_on = [aws_vpc.vpc, tls_private_key.oskey, aws_efs_file_system.db_efs]
 }
 
 resource "aws_ebs_volume" "volume" {
   availability_zone = aws_instance.nginx2.availability_zone
   size              = 10
-  depends_on        = [aws_vpc.vpc, aws_instance.nginx2]
+  depends_on        = [aws_instance.nginx2]
 }
 
 resource "aws_volume_attachment" "ebsAttach" {
   device_name = "/dev/sdh"
   volume_id   = aws_ebs_volume.volume.id
   instance_id = aws_instance.nginx2.id
-  depends_on  = [aws_instance.nginx2, aws_ebs_volume.volume]
+  depends_on  = [aws_ebs_volume.volume]
 }
 
 /*
