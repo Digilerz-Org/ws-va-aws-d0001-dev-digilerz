@@ -2,9 +2,13 @@
 # SECURITY GROUPS
 ##################################################################################
 resource "aws_security_group" "nginx-2-sg" {
-  name   = "nginx_sg"
-  vpc_id = aws_vpc.vpc.id
-  tags   = local.common_tags
+  name        = "${local.environment}-instance-SG"
+  description = "security group for instance"
+  vpc_id      = aws_vpc.vpc.id
+  tags = {
+    Name        = "${local.namespace}-instance-SG"
+    Environment = local.environment
+  }
 
   ingress {
     from_port   = 22

@@ -1,0 +1,30 @@
+####################################################################
+################################EBS#################################
+####################################################################
+resource "aws_ebs_volume" "ebs_volume" {
+  availability_zone = aws_instance.dev_instance.availability_zone
+  size              = 10
+  depends_on        = [aws_instance.dev_instance]
+}
+
+resource "aws_volume_attachment" "ebs_attach" {
+  device_name = "/dev/sdh"
+  volume_id   = aws_ebs_volume.ebs_volume.id
+  instance_id = aws_instance.dev_instance.id
+  depends_on  = [aws_ebs_volume.ebs_volume]
+}
+
+
+
+################################OUTPUT######################################
+
+output "ebs-volume-az" {
+  value       = "AZ of volume -> ${aws_ebs_volume.ebs_volume.availability_zone}"
+  description = "AZ of EBS VOLUME"
+}
+
+output "ebs-volume-id" {
+  value       = "ID of Volume -> ${aws_ebs_volume.ebs_volume.id}"
+  description = "ID of EBS VOLUME"
+}
+

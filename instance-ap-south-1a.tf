@@ -1,42 +1,39 @@
 
 locals {
-  instance_user_name = "ubuntu" #this is not 
-
+  instance_resource_name = "${local.environment}_instance" #this is not given in any where
+  instance_user_name     = "ubuntu"                        #this is not given in any where
+  instance_sg            = "aws_security_group.nginx-2-sg.id"
 }
 
 
-variable "nginx2_instance_type" {
+variable "instance_type" {
   type        = string
   description = "Type for EC2 Instance"
   default     = "t2.micro"
 }
 
-variable "nginx2_instance_ami" {
+variable "instance_ami" {
   type        = string
   description = "Ubuntu Server 22.04 LTS (HVM) SSD Volume Type"
   default     = "ami-062df10d14676e201"
 }
 
-# #Data block for AMI ID
-# data "aws_ssm_parameter" "ami" {
-#   name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
-# }
 
-# INSTANCES
-resource "aws_instance" "nginx2" {
-  # ami                    = nonsensitive(data.aws_ssm_parameter.ami.value)
-  ami                    = var.nginx2_instance_ami
-  instance_type          = var.nginx2_instance_type
-  subnet_id              = aws_subnet.subnet1.id
-  vpc_security_group_ids = [aws_security_group.nginx-2-sg.id]
+####################################################################
+#############################INSTANCES##############################
+####################################################################
+resource "aws_instance" "dev_instance" {
+  ami                    = var.instance_ami
+  instance_type          = var.instance_type
+  subnet_id              = local.instance_subnet_1
+  vpc_security_group_ids = [local.instance_sg]
   user_data              = file("user-data-ubuntu/ubuntu-installation.sh")
-  key_name               = aws_key_pair.key121.key_name
-  # dns_hostnames          = ["${var.nginx2_hostname}.${local.dns_suffix}"]
+  key_name               = local.instance_ED25519_keypair
 
   root_block_device {
     delete_on_termination = true
     encrypted             = false
-    # kms_key_id            = local.ebs_key
+    # kms_key_id            = local.kms_ebs_key
     volume_size = 30
     volume_type = "standard"
   }
@@ -46,67 +43,45 @@ resource "aws_instance" "nginx2" {
     volume_size = 100
     volume_type = "standard"
     encrypted   = false
-    # kms_key_id            = local.ebs_key
+    # kms_key_id            = local.kms_ebs_key
     delete_on_termination = true
   }
 
   tags = {
-    Name        = "nginx2"
-    Environment = "dev"
+    Name        = "${local.namespace}-instance"
+    Environment = local.environment
   }
+
   depends_on = [aws_vpc.vpc, tls_private_key.oskey]
 }
 
-# resource "aws_ebs_volume" "ebs_volume" {
-#   availability_zone = aws_instance.nginx2.availability_zone
-#   size              = 10
-#   depends_on        = [aws_instance.nginx2]
-# }
-
-# resource "aws_volume_attachment" "ebs_attach" {
-#   device_name = "/dev/sdh"
-#   volume_id   = aws_ebs_volume.ebs_volume.id
-#   instance_id = aws_instance.nginx2.id
-#   depends_on  = [aws_ebs_volume.ebs_volume]
-# }
 
 
-
-
-##################################OUTPUT#########################################
+################################OUTPUT######################################
 
 output "instance-id" {
-  value       = "ID of the Instance -> ${aws_instance.nginx2.id}"
+  value       = "ID of the Instance -> ${aws_instance.dev_instance.id}"
   description = "ID of Instance"
 }
 
 output "instance-private-ip" {
-  value       = aws_instance.nginx2.private_ip
+  value       = aws_instance.dev_instance.private_ip
   description = "Private IP address of instance for route53 DNS record"
 }
 
 output "instance-az" {
-  value       = "Instance is Launcher -> ${aws_instance.nginx2.availability_zone}"
+  value       = "Instance is Launcher -> ${aws_instance.dev_instance.availability_zone}"
   description = "AZ of Instance"
 }
 
 output "instance-root-volume-id" {
-  value       = aws_instance.nginx2.root_block_device.*.volume_id
+  value       = aws_instance.dev_instance.root_block_device.*.volume_id
   description = "root-volume-id"
 }
 
 output "instance-ebs-volume-id" {
-  value       = aws_instance.nginx2.ebs_block_device.*.volume_id
+  value       = aws_instance.dev_instance.ebs_block_device.*.volume_id
   description = "ebs-volume-id"
 }
 
-# output "ebs-volume-az" {
-#   value       = "AZ of volume -> ${aws_ebs_volume.ebs_volume.availability_zone}"
-#   description = "AZ of EBS VOLUME"
-# }
-
-# output "ebs-volume-id" {
-#   value       = "ID of Volume -> ${aws_ebs_volume.ebs_volume.id}"
-#   description = "ID of EBS VOLUME"
-# }
 

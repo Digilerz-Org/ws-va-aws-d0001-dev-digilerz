@@ -1,13 +1,13 @@
 # ###############Null resources#################
 # resource "null_resource" "copy_null_resource" {
 #   triggers = {
-#     ec2_instance_ids = aws_instance.nginx2.id
+#     ec2_instance_ids = aws_instance.dev_instance.id
 #   }
 
 #   connection {
 #     type        = "ssh"
 #     user        = "ubuntu"
-#     host        = aws_instance.nginx2.public_ip
+#     host        = aws_instance.dev_instance.public_ip
 #     private_key = file("instance_keypair/myterrakey.pem")
 #     timeout     = "4m"
 #   }
@@ -23,15 +23,15 @@
 /*
 ###############EBS Mount file -  Null resources#################
 #Null Resources
-resource "null_resource" "nginx2_ebs_null_resource" {
+resource "null_resource" "dev_instance_ebs_null_resource" {
   triggers = {
-    ec2_instance_ids = aws_instance.nginx2.id
+    ec2_instance_ids = aws_instance.dev_instance.id
   }
 
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = aws_instance.nginx2.private_ip
+    host        = aws_instance.dev_instance.private_ip
     private_key = tls_private_key.oskey.private_key_pem
   }
 
@@ -48,22 +48,22 @@ resource "null_resource" "nginx2_ebs_null_resource" {
       "sudo /home/ubuntu/ebs.sh ${aws_ebs_volume.ebs_volume.id} /home/ubuntu/"
     ]
   }
-  depends_on = [aws_instance.nginx2, aws_volume_attachment.ebs_attach]
+  depends_on = [aws_instance.dev_instance, aws_volume_attachment.ebs_attach]
 }*/
 
 
 
 /*
 ###############Script Swap file -  Null resources#################
-resource "null_resource" "nginx2_null_swap_memory" { 
+resource "null_resource" "dev_instance_null_swap_memory" { 
   triggers = {
-    ec2_instance_ids = aws_instance.nginx2.this_id
+    ec2_instance_ids = aws_instance.dev_instance.this_id
   }
 
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    host        = aws_instance.nginx2.this_private_ip
+    host        = aws_instance.dev_instance.this_private_ip
     private_key = tls_private_key.oskey.private_key_pem
   }
 
@@ -87,16 +87,16 @@ resource "null_resource" "nginx2_null_swap_memory" {
 
 /*
 ###############Ansible All Files -  Null resources#################
-resource "null_resource" "nginx2_null_resource" {
-  depends_on = [aws_instance.nginx2, aws_ebs_volume.ebs_volume]
+resource "null_resource" "dev_instance_null_resource" {
+  depends_on = [aws_instance.dev_instance, aws_ebs_volume.ebs_volume]
   triggers = {
-    ec2_instance_ids = aws_instance.nginx2.this_id
+    ec2_instance_ids = aws_instance.dev_instance.this_id
   }
 
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    host        = aws_instance.nginx2.this_private_ip
+    host        = aws_instance.dev_instance.this_private_ip
     private_key = tls_private_key.oskey.private_key_pem
   }
 
@@ -118,7 +118,7 @@ resource "null_resource" "nginx2_null_resource" {
     inline = [
       "export ANSIBLE_HOST_KEY_CHECKING=False",
       "ansible-playbook  --connection=local --inventory 127.0.0.1, ~/ansible-scripts/ansible-main.yml"
-      #"ansible-playbook --extra-vars='{ dnshostname : ${var.nginx2_hostname}.${local.dns_suffix} }' --connection=local --inventory 127.0.0.1, ~/ansible-scripts/ansible-rhel79/ansible-rhel79.yml"      
+      #"ansible-playbook --extra-vars='{ dnshostname : ${var.dev_instance_hostname}.${local.dns_suffix} }' --connection=local --inventory 127.0.0.1, ~/ansible-scripts/ansible-rhel79/ansible-rhel79.yml"      
     ]
   }
 }*/
@@ -127,15 +127,15 @@ resource "null_resource" "nginx2_null_resource" {
 
 /*
 ###############Ansible - EFS Null resources#################
-resource "null_resource" "nginx2_null_resource_efs" {
+resource "null_resource" "dev_instance_null_resource_efs" {
   triggers = {
-    ec2_instance_ids = aws_instance.nginx2.id
+    ec2_instance_ids = aws_instance.dev_instance.id
   }
 
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = aws_instance.nginx2.public_ip
+    host        = aws_instance.dev_instance.public_ip
     private_key = file("./instance_keypair/myterrakey.pem")
     timeout     = "4m"
   }
@@ -151,6 +151,6 @@ resource "null_resource" "nginx2_null_resource_efs" {
       " ansible-playbook --extra-vars='{ efs_file_system_id : ${aws_efs_mount_target.efs_mount_trgt_2a.ip_address}, efs_mount_dir : /efs }'  --connection=local --inventory 127.0.0.1, /home/ubuntu/efs.yaml "
     ]
   }
-  depends_on = [tls_private_key.oskey, aws_instance.nginx2, aws_efs_file_system.db_efs]
+  depends_on = [tls_private_key.oskey, aws_instance.dev_instance, aws_efs_file_system.db_efs]
 }
 */

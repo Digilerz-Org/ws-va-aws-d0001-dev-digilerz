@@ -1,8 +1,13 @@
 # Security Group for EFS
 resource "aws_security_group" "db_efs_security_group" {
-  description = "security group for nginx2-efs"
+  name        = "${local.environment}-efs-SG"
+  description = "security group for db-efs"
   vpc_id      = aws_vpc.vpc.id
-  name        = "${local.namespace}-efs-security-group"
+  tags = {
+    Name        = "${local.namespace}-efs-SG"
+    Environment = local.environment
+  }
+
 
   # to allow the traffic from the bastions
 
@@ -37,7 +42,5 @@ resource "aws_security_group" "db_efs_security_group" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
-  tags = { "Name" = "${local.namespace}-efs-security-group" }
 
 }

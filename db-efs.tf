@@ -1,17 +1,15 @@
-variable "db_efs_name" {
-  description = "name of the elastic file system"
-  default     = "db_efs"
-}
-
+####################################################################
+################################EFS#################################
+####################################################################
 resource "aws_efs_file_system" "db_efs" {
-  creation_token = var.db_efs_name
+  creation_token = "${local.environment}-db-efs"
   encrypted      = false
-  #   kms_key_id     = local.ebs_key
+  # kms_key_id     = local.kms_ebs_key
   tags = {
-    Name        = "nginx2-efs"
-    Environment = "dev"
+    Name        = "${local.namespace}-efs"
+    Environment = local.environment
   }
-  depends_on = [aws_instance.nginx2]
+  depends_on = [aws_instance.dev_instance]
 }
 
 resource "aws_efs_mount_target" "efs_mount_trgt_2a" {
@@ -20,11 +18,13 @@ resource "aws_efs_mount_target" "efs_mount_trgt_2a" {
   security_groups = [aws_security_group.db_efs_security_group.id]
 }
 
-#resource "aws_efs_mount_target" "efs_mount_trgt_2a_2b" {
+#resource "aws_efs_mount_target" "efs_mount_trgt_2b" {
 #  file_system_id  = aws_efs_file_system.db_efs.id
 #  subnet_id       = aws_subnet.subnet2.id
 #  security_groups = [aws_security_group.db_efs_security_group.id]
 #}
+
+
 
 ###############################Ouptput#################################
 
@@ -33,7 +33,7 @@ output "db_efs_ip_2a" {
 }
 
 #output "db_efs_ip_1b" {
-#  value = aws_efs_mount_target.efs_mount_trgt_2a_2b.ip_address
+#  value = aws_efs_mount_target.efs_mount_trgt_2b.ip_address
 #}
 
 output "file_system_dns_name" {
