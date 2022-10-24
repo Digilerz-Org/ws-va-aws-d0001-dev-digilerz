@@ -27,12 +27,18 @@ data "aws_availability_zones" "available" {}
 resource "aws_vpc" "vpc" {
   cidr_block           = var.vpc_cidr_block
   enable_dns_hostnames = true
-  tags                 = local.common_tags
+  tags = {
+    Name        = "${local.namespace}-vpc"
+    Environment = local.environment
+  }
 }
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
-  tags   = local.common_tags
+  tags = {
+    Name        = "${local.namespace}-igw"
+    Environment = local.environment
+  }
 }
 
 resource "aws_subnet" "subnet1" {
@@ -40,7 +46,10 @@ resource "aws_subnet" "subnet1" {
   vpc_id                  = aws_vpc.vpc.id
   map_public_ip_on_launch = var.map_public_ip_on_launch
   availability_zone       = data.aws_availability_zones.available.names[0]
-  tags                    = local.common_tags
+  tags = {
+    Name        = "${local.namespace}-subnet1"
+    Environment = local.environment
+  }
 }
 
 resource "aws_subnet" "subnet2" {
@@ -48,7 +57,10 @@ resource "aws_subnet" "subnet2" {
   vpc_id                  = aws_vpc.vpc.id
   map_public_ip_on_launch = var.map_public_ip_on_launch
   availability_zone       = data.aws_availability_zones.available.names[1]
-  tags                    = local.common_tags
+  tags = {
+    Name        = "${local.namespace}-subnet2"
+    Environment = local.environment
+  }
 }
 
 # ROUTING #
@@ -58,7 +70,10 @@ resource "aws_route_table" "rtb" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
-  tags = local.common_tags
+  tags = {
+    Name        = "${local.namespace}-rtb"
+    Environment = local.environment
+  }
 }
 
 resource "aws_route_table_association" "rta-subnet1" {
