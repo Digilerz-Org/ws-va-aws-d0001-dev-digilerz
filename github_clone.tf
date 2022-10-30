@@ -14,7 +14,7 @@ provider "github" {
   #   version = "~>v2.9"
 }
 
-data "github_repository" "dummy" {
+data "github_repository" "main" {
   full_name = "Digilerz-Org/ws-va-aws-d0001-dev-digilerz"
 }
 
