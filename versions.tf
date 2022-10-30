@@ -15,5 +15,9 @@ terraform {
       source = "hashicorp/template"
       # version = "~> 2.0"
     }
+    github = {
+      source = "hashicorp/github"
+      # version = "~>v2.9"
+    }
   }
 }
