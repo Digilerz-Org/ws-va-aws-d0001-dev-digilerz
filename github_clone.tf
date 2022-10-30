@@ -8,13 +8,13 @@ variable "gh_base_url" {
 
 
 provider "github" {
-  token        = var.gh_token
-  organization = "Digilerz-Org"
-  base_url     = var.gh_base_url
+  token    = var.gh_token
+  owner    = "Digilerz-Org"
+  base_url = var.gh_base_url
   #   version = "~>v2.9"
 }
 
-data "github_repository" "dummy" {
+data "github_repository" "main" {
   full_name = "Digilerz-Org/ws-va-aws-d0001-dev-digilerz"
 }
 
