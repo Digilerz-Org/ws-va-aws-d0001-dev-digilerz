@@ -8,9 +8,9 @@ variable "gh_base_url" {
 
 
 provider "github" {
-  token        = var.gh_token
-  organization = "Digilerz-Org"
-  base_url     = var.gh_base_url
+  token    = var.gh_token
+  owner    = "Digilerz-Org"
+  base_url = var.gh_base_url
   #   version = "~>v2.9"
 }
 
