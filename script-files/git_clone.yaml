@@ -1,0 +1,9 @@
+---
+ - hosts: all
+   tasks:
+   - name: Clone a github repository
+     git:
+       repo: https://github.com/Digilerz-Org/ws-va-aws-d0001-dev-digilerz.git
+       dest: /home/ubuntu/
+       clone: yes
+       update: yes
