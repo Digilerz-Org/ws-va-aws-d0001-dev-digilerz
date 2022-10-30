@@ -17,9 +17,9 @@ locals {
   # kms_s3_key = 
 
   # Subnets
-  instance_subnet_1 = "aws_subnet.subnet1.id"
-  instance_subnet_2 = "aws_subnet.subnet2.id"
+  instance_subnet_1 = aws_subnet.subnet1.id
+  instance_subnet_2 = aws_subnet.subnet2.id
 
   #Keypairs
-  instance_ED25519_keypair = "aws_key_pair.key121.key_name"
+  instance_ED25519_keypair = aws_key_pair.key121.key_name
 }
