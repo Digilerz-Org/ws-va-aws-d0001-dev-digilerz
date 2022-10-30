@@ -16,6 +16,15 @@
 #     source      = "./script-files/efs.yaml"
 #     destination = "/home/ubuntu/efs.yaml"
 #   }
+
+#   provisioner "remote-exec" {
+#     inline = [
+#       "sudo mkdir /home/ubuntu/project",
+#       # "chmod +x /home/ubuntu/project",
+#       "sudo cd /home/ubuntu/project",
+#       "sudo git clone https://github.com/Digilerz-Org/ws-va-aws-d0001-dev-digilerz.git"
+#     ]
+#   }
 # }
 
 

@@ -2,7 +2,7 @@
 locals {
   instance_resource_name = "${local.environment}_instance" #this is not given in any where
   instance_user_name     = "ubuntu"                        #this is not given in any where
-  instance_sg            = "aws_security_group.nginx-2-sg.id"
+  instance_sg            = aws_security_group.nginx-2-sg.id
 }
 
 
