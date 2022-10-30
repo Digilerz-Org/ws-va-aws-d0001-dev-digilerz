@@ -1,31 +1,32 @@
-# ###############Null resources#################
-# resource "null_resource" "copy_null_resource" {
-#   triggers = {
-#     ec2_instance_ids = aws_instance.dev_instance.id
-#   }
+###############Null resources#################
+resource "null_resource" "copy_null_resource" {
+  triggers = {
+    ec2_instance_ids = aws_instance.dev_instance.id
+  }
 
-#   connection {
-#     type        = "ssh"
-#     user        = "ubuntu"
-#     host        = aws_instance.dev_instance.public_ip
-#     private_key = file("instance_keypair/myterrakey.pem")
-#     timeout     = "4m"
-#   }
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = aws_instance.dev_instance.public_ip
+    # private_key = file("instance_keypair/myterrakey.pem")
+    private_key = local.instance_ED25519_keypair
+    timeout     = "4m"
+  }
 
-#   provisioner "file" {
-#     source      = "./script-files/efs.yaml"
-#     destination = "/home/ubuntu/efs.yaml"
-#   }
+  provisioner "file" {
+    source      = "./script-files/efs.yaml"
+    destination = "/home/ubuntu/efs.yaml"
+  }
 
-#   provisioner "remote-exec" {
-#     inline = [
-#       "sudo mkdir /home/ubuntu/project",
-#       # "chmod +x /home/ubuntu/project",
-#       "sudo cd /home/ubuntu/project",
-#       "sudo git clone https://github.com/Digilerz-Org/ws-va-aws-d0001-dev-digilerz.git"
-#     ]
-#   }
-# }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mkdir /home/ubuntu/project",
+      # "chmod +x /home/ubuntu/project",
+      "sudo cd /home/ubuntu/project",
+      "sudo git clone https://github.com/Digilerz-Org/ws-va-aws-d0001-dev-digilerz.git"
+    ]
+  }
+}
 
 
 
