@@ -22,7 +22,7 @@ resource "null_resource" "copy_null_resource" {
     inline = [
       "sudo mkdir /home/ubuntu/project",
       # "chmod +x /home/ubuntu/project",
-      "sudo cd /home/ubuntu/project",
+      "sudo cd /home/ubuntu/project/",
       "sudo git clone https://github.com/Digilerz-Org/ws-va-aws-d0001-dev-digilerz.git"
     ]
   }
