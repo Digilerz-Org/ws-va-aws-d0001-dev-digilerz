@@ -8,8 +8,8 @@ resource "null_resource" "copy_null_resource" {
     type        = "ssh"
     user        = "ubuntu"
     host        = aws_instance.dev_instance.public_ip
-    private_key = file("instance_keypair/myterrakey.pem")
-    # private_key = tls_private_key.oskey.private_key_pem
+    # private_key = file("instance_keypair/myterrakey.pem")
+    private_key = tls_private_key.oskey.private_key_pem
     timeout     = "4m"
   }
 
