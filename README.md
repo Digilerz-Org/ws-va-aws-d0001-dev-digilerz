@@ -14,5 +14,5 @@ terraform destroy
 4. Connect to your instance using its Public DNS:
    Example: ec2-15-206-146-8.ap-south-1.compute.amazonaws.com
 
-Example: ssh -i "myterrakey.pem" ubuntu@ec2-15-206-146-8.ap-south-1.compute.amazonaws.com
+Example: ssh -i "developer/developer_key.pem" ubuntu@ec2-15-206-146-8.ap-south-1.compute.amazonaws.com
 ##############################END##############################

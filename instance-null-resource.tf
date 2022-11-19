@@ -9,7 +9,8 @@ resource "null_resource" "copy_null_resource" {
     user = "ubuntu"
     host = aws_instance.dev_instance.public_ip
     # private_key = file("instance_keypair/myterrakey.pem")
-    private_key = tls_private_key.oskey.private_key_pem
+    private_key = file("developer/developer_key.pem")
+    # private_key = tls_private_key.oskey.private_key_pem
     timeout     = "4m"
   }
 
@@ -18,14 +19,14 @@ resource "null_resource" "copy_null_resource" {
     destination = "/home/ubuntu/"
   }
 
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "sudo mkdir /home/ubuntu/project",
-  #     # "chmod +x /home/ubuntu/project",
-  #     "sudo cd /home/ubuntu/project/",
-  #     "sudo git clone https://github.com/Digilerz-Org/ws-va-aws-d0001-dev-digilerz.git"
-  #   ]
-  # }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mkdir /home/ubuntu/project",
+      # "chmod +x /home/ubuntu/project",
+      "sudo cd /home/ubuntu/project/",
+      "sudo git clone https://github.com/Digilerz-Org/ws-va-aws-d0001-dev-digilerz.git"
+    ]
+  }
 }
 
 
