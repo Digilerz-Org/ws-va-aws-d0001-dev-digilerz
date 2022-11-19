@@ -1,4 +1,5 @@
 ###############Null resources#################
+/*
 resource "null_resource" "copy_null_resource" {
   triggers = {
     ec2_instance_ids = aws_instance.dev_instance.id
@@ -28,7 +29,7 @@ resource "null_resource" "copy_null_resource" {
     ]
   }
 }
-
+*/
 
 
 /*
