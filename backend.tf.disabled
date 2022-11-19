@@ -4,10 +4,10 @@
 terraform {
   backend "remote" {
     hostname     = "app.terraform.io"
-    organization = local.organization
+    organization = "Digilerz-Org"
 
     workspaces {
-      name = local.workspaces_2
+      name = "ws-va-aws-d0001-dev-digilerz"
     }
   }
 }

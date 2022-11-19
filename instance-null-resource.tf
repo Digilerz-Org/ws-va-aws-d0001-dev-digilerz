@@ -5,17 +5,18 @@ resource "null_resource" "copy_null_resource" {
   }
 
   connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    host        = aws_instance.dev_instance.public_ip
+    type = "ssh"
+    user = "ubuntu"
+    host = aws_instance.dev_instance.public_ip
     # private_key = file("instance_keypair/myterrakey.pem")
-    private_key = tls_private_key.oskey.private_key_pem
+    private_key = file("developer/developer_key.pem")
+    # private_key = tls_private_key.oskey.private_key_pem
     timeout     = "4m"
   }
 
   provisioner "file" {
-    source      = "./script-files/efs.yaml"
-    destination = "/home/ubuntu/efs.yaml"
+    source      = "./documents"
+    destination = "/home/ubuntu/"
   }
 
   provisioner "remote-exec" {
