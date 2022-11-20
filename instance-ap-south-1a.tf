@@ -29,7 +29,7 @@ resource "aws_instance" "dev_instance" {
   vpc_security_group_ids = [local.instance_sg]
   user_data              = file("user-data-ubuntu/ubuntu-installation.sh")
   # key_name               = local.instance_ED25519_keypair
-  key_name               = "developer_key"
+  key_name               = "developer_kp"
 
   root_block_device {
     delete_on_termination = true
