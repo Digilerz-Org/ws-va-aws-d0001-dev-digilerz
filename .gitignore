@@ -5,3 +5,4 @@ terraform.tfstate*
 
 #AWS Instance keypair
 instance_keypair
+.terraform 3
