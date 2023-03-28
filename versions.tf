@@ -11,10 +11,10 @@ terraform {
       source = "hashicorp/null"
       # version = "~> 3.0"
     }
-    template = {
-      source = "hashicorp/template"
-      # version = "~> 2.0"
-    }
+#    template = {
+#      source = "hashicorp/template"
+#      # version = "~> 2.0"
+#    }
     github = {
       source = "integrations/github"
       # version = "~>v2.9"
